@@ -1,0 +1,25 @@
+Commands: 
+/help
+/question
+/question
+/genres
+
+
+Start the project
+It asks u how many questions should be generated
+And from which genre and difficulty
+
+Welcome to the Quiz API.
+How many Questions would u like to generate? (1-20)
+10
+From which genre (enter genre to list all genres, type "any" for all genres)
+any
+Difficulty? (Ez, Mid, Diff, rnd)
+rnd
+
+Ask and respond all 10 questions
+After 10 questions just ask if the user once to continue
+
+
+
+
