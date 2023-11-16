@@ -1,13 +1,13 @@
 const express=require('express')
 const body_parser = require("body-parser")
 const axios = require('axios')
-
+require
 
 const app=express().use(body_parser.json())
-const token = "";
+const token = process.env.TOKEN
+const mytoken = process.env.MYTOKEN
 
-
-app.listen(8000,()=> {
+app.listen(8000||process.env.PORT,()=> {
     console.log("Webhook is listening")
 })
 
@@ -61,6 +61,8 @@ app.post("/webhook", (req, res) =>{
             })       
             
             res.sendStatus(200)
+        } else {
+            res.sendStatus(404)
         }
     }
 
