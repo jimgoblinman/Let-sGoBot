@@ -1,6 +1,7 @@
 const prompt = require("prompt-sync")();
 const { fetchQuestion } = require("./fetch");
 
+
 function fetchQuestionAndHandle() {
 
     fetchQuestion()

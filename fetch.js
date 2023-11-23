@@ -1,14 +1,14 @@
 const prompt = require("prompt-sync")();
 
+let settings = false;
+let category = "";
+let difficulty = "";
+let type = "";
+
 async function fetchQuestion() {
     // Use dynamic import for node-fetch
     const fetch = (await import("node-fetch")).default;
-
-    let settings = false
-    let category = "";
-    let difficulty = "";
-    let type = "";
-
+    
 
     if (settings == false) {//difficulty, gamemode
         console.log("Please enter some Settings for your Trivia Game. Leave it blank for the default settings.")
@@ -19,7 +19,6 @@ async function fetchQuestion() {
         settings = true;
     }
 
-    
 
     if (difficulty == 1) {
         difficulty = "easy";
