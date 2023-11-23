@@ -1,48 +1,59 @@
 const prompt = require("prompt-sync")();
-const url = "https://opentdb.com/api.php?amount=1"; //add parameters category,difficulty, and multiple choice or true/false
 
-fetch(url)
-    .then(response => {
-        if (response.ok) {
-            return response.json();
-        } else {
-            throw new Error(`Error: ${response.status}`);
-        }
-    })
-    .then(data => {
-        const results = data.results || [];
-        const questions = results.map(questionData => questionData.question);
-        const incorrectAnswers = results.map(multipleChoice => multipleChoice.incorrect_answers || []);
-        const correctAnswer = results.map(answerData => answerData.correct_answer);
+async function fetchQuestion() {
+    // Use dynamic import for node-fetch
+    const fetch = (await import("node-fetch")).default;
 
-        console.log("1. Question: " + questions[0]);
-        const answers = incorrectAnswers[0].concat(correctAnswer[0]); 
-        shuffleArray(answers);
+    let settings = false
+    let category = "";
+    let difficulty = "";
+    let type = "";
 
-        // Display options with letters (A, B, C, D)
-        answers.forEach((option, index) => {
-            const optionLetter = String.fromCharCode(65 + index); // 65 is ASCII code for 'A'
-            console.log(`${optionLetter}. ${option}`);
-        });
 
-        const choiceLetter = prompt("Which one is correct (A-D): ").toUpperCase(); // Convert user input to uppercase
-
-        const choiceIndex = choiceLetter.charCodeAt(0) - 65; // Convert letter to index (0 for 'A', 1 for 'B', and so on)
-
-        if (answers[choiceIndex] === correctAnswer[0]) {
-            console.log('You are correct!');
-        } else {
-            console.log(`Incorrect! The correct answer is: ${correctAnswer[0]}`);
-        }
-    })
-    .catch(error => {
-        console.error(error);
-    });
-/*
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+    if (settings == false) {//difficulty, gamemode
+        console.log("Please enter some Settings for your Trivia Game. Leave it blank for the default settings.")
+        category = prompt("Which category would you like to pick: "); //Print all the categories
+        difficulty = prompt("Which difficulty would you like to pick: (1 Easy, 2 Medium, 3 Hard) ");
+        type = prompt("Which type would you like to pick: (1 Multiple Choice, 2 True/False) ");
+        
+        settings = true;
     }
-}*/
 
+    
+
+    if (difficulty == 1) {
+        difficulty = "easy";
+    } else if (difficulty == 2) {
+        difficulty = "medium";
+    } else if (difficulty == 3) {
+        difficulty = "hard";
+    }
+
+    if (type == "1") {
+        type = "multiple"
+    } else {
+        type = "boolean"
+    }
+
+    console.log("Category: " +category);
+    console.log("Difficulty: " +difficulty);
+    console.log("Type: " +type);
+
+    const url = `https://opentdb.com/api.php?amount=1&category=${category}&difficulty=${difficulty}&type=${type}`;
+    
+    console.log(url);
+
+    return fetch(url)
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error(`Error: ${response.status}`);
+            }
+        })
+        .catch(error => {
+            throw error;
+        });
+}
+
+module.exports = { fetchQuestion };

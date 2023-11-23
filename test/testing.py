@@ -34,7 +34,7 @@ while loop:
                 loop = False
                 print('Thanks for playing. See you next time!')
         else:
-            print('Ur trash kid! The answer is: ' + correct_answer[0])
+            print('Better luck next time! The answer is: ' + correct_answer[0])
             quit = input("Would you like to continue? (y/n): ")
             if quit == 'n': 
                 loop = False
