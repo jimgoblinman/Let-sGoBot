@@ -13,9 +13,9 @@ app.listen(8000||process.env.PORT,()=> {
 
 //to verify the callback url from dashboard side - cloud api side
 app.get("/webhook", (req, res)=> {
-    let mode=req.query("hub.mode")
-    let challenge=req.query("hub.challenge")
-    let token=req.query("hub.verify_token")
+    let mode=req.query["hub.mode"]
+    let challenge=req.query["hub.challenge"]
+    let token=req.query["hub.verify_token"]
 
     const mytoken="";
 
