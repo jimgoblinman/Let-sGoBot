@@ -2,6 +2,8 @@ const express=require('express')
 const body_parser = require("body-parser")
 const axios = require('axios')
 
+require('dotenv').config();
+
 const app=express().use(body_parser.json())
 const token = process.env.TOKEN
 const mytoken = process.env.MYTOKEN
@@ -50,9 +52,11 @@ app.post("/webhook", (req, res) =>{
             console.log("from:", from);
             console.log("msg_body:", msg_body)
 
+
+            console.log("Request URL:", "https://graph.facebook.com/v17.0/" + phone_no_id + "/messages?access_token=" + token);
             axios ({
                 method:"POST",
-                url:"https://graph.facebook.com/v17.0"+phone_no_id+"/messages?access_token="+token,
+                url:"https://graph.facebook.com/v17.0/"+phone_no_id+"/messages?access_token="+token,
                 data:{
                     messaging_product:"whatsapp",
                     to:from,
@@ -61,7 +65,8 @@ app.post("/webhook", (req, res) =>{
                     }
                 },
                 headers:{
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
                 }
 
             })       
