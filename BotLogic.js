@@ -1,5 +1,6 @@
 const prompt = require("prompt-sync")();
-const { fetchQuestion } = require("./fetch");
+const { fetchQuestion } = require("./fetch") 
+let { name, msg } = require("./index.js");
 
 
 function fetchQuestionAndHandle() {
@@ -56,4 +57,17 @@ function shuffleArray(array) {
 }
 
 // Call the function to start the loop
-fetchQuestionAndHandle();
+
+const letsgo = true
+while(letsgo) { 
+if (msg != '') {
+    main(msg)
+}
+}
+function main(msg) {
+    if (msg == 'start') {
+        console.log("Lets Go")
+        fetchQuestionAndHandle();
+    } else {
+    }
+}
