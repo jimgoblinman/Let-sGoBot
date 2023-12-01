@@ -13,6 +13,9 @@ let name = "";
 let msg = "";
 let questionAsked = false;
 let nthQuestion = false;
+let category = "";
+let difficulty = "";
+let type = "";
 
 app.listen(8000 || process.env.PORT, () => {
     console.log("Webhook is listening");
@@ -75,14 +78,14 @@ async function main(phone_no_id, from, msg) {
                   "Enjoy the trivia!";
         sendWhatsAppMessage(phone_no_id, from, out_msg);
     } else if (questionAsked == false) {
-        out_msg = "Please enter 'start' to start. Type 'help' for a quick start of the Bot";
+        out_msg = "Invalid Input! Please enter 'start' to start. Type 'help' for a quick start of the Bot";
         sendWhatsAppMessage(phone_no_id, from, out_msg);
     }
 }
 
 async function fetchQuestionAndHandle(phone_no_id, from) {
     try {
-        const data = await fetchQuestion();
+        const data = await fetchQuestion(phone_no_id, from, out_msg);
         const results = data.results || [];
         const questions = results.map(questionData => questionData.question);
         const incorrectAnswers = results.map(multipleChoice => multipleChoice.incorrect_answers || []);
@@ -156,8 +159,9 @@ async function waitForUserResponse(phone_no_id, from, answers, correctAnswer) {
     // Prompt the user to continue
     out_msg = "Would you like to continue? (y/n): ";
     sendWhatsAppMessage(phone_no_id, from, out_msg);
-    await delay(5000);
+    await delay(7000);
     if (msg.toLowerCase() == 'y' || msg.toLowerCase() == 'yes') {
+        nthQuestion = true;
         letsGo(phone_no_id, from);
     } else {
         out_msg = "See ya next time!";
@@ -168,7 +172,6 @@ async function waitForUserResponse(phone_no_id, from, answers, correctAnswer) {
     await delay(500);
     }
 }
-
 
 function sendWhatsAppMessage(phone_no_id, to, body) {
     axios({
@@ -187,8 +190,13 @@ function sendWhatsAppMessage(phone_no_id, to, body) {
     });
 }
 
-function fetchQuestion() {
-    const url = "https://opentdb.com/api.php?amount=1&type=multiple";
+async function fetchQuestion(phone_no_id, from, out_msg) {
+    if (nthQuestion == false) {
+        await settings(phone_no_id, from, out_msg);
+    } 
+    const url = `https://opentdb.com/api.php?amount=1&category=${category}&difficulty=${difficulty}&type=${type}`;
+
+    console.log("Trivia Url: "+url)
     return fetch(url)
         .then(response => {
             if (response.ok) {
@@ -223,6 +231,51 @@ async function letsGo(phone_no_id, from) {
     await fetchQuestionAndHandle(phone_no_id, from);
 }
 
-module.exports = {
-    name, msg
-};
+
+async function settings(phone_no_id, from, out_msg) {
+        msg = ''
+        delay(500)
+        out_msg = "Please enter some Settings for your Trivia Game. Leave it blank for the default settings.\nWhich category would you like to pick (9-32): ";
+        sendWhatsAppMessage(phone_no_id, from, out_msg);
+        // Wait for the user's response
+        delay(3000)
+        await waitForUserInput();
+        category = msg.trim();  // Trim whitespace from user input
+        
+        msg = ''
+        delay(500)
+        out_msg = "Which difficulty would you like to pick: (1 Easy, 2 Medium, 3 Hard) ";
+        sendWhatsAppMessage(phone_no_id, from, out_msg);
+        await delay(3500)
+        difficulty = await msg;
+        if (difficulty == 1) {
+            difficulty = "easy";
+        } else if (difficulty == 2) {
+            difficulty = "medium";
+        } else if (difficulty == 3) {
+            difficulty = "hard";
+        }
+
+        delay(500)
+        msg = ''
+        out_msg = "Which type would you like to pick: (1 Multiple Choice, 2 True/False)";
+        sendWhatsAppMessage(phone_no_id, from, out_msg);
+        await delay(3500)
+        type = await msg;
+        if (type == 1) {
+            type = "multiple"
+        } else if (type == 2) {
+            type == "boolean"
+        }
+        await delay(500)
+}
+
+async function waitForUserInput() {
+    while (msg.trim() === '') {
+        // Wait until user provides input
+        await delay(500);
+    }
+    const userInput = msg.trim();
+    msg = '';  // Reset msg for the next input
+    return userInput;
+}
