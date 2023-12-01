@@ -157,8 +157,8 @@ async function waitForUserResponse(phone_no_id, from, answers, correctAnswer) {
     out_msg = "Would you like to continue? (y/n): ";
     sendWhatsAppMessage(phone_no_id, from, out_msg);
     await delay(5000);
-    if (msg.toLowerCase == 'y' || msg.toLowerCase == 'yes') {
-        letsGo();
+    if (msg.toLowerCase() == 'y' || msg.toLowerCase() == 'yes') {
+        letsGo(phone_no_id, from);
     } else {
         out_msg = "See ya next time!";
         sendWhatsAppMessage(phone_no_id, from, out_msg);
@@ -217,8 +217,8 @@ function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function letsGo() {
-    console.log("Waiting fetch");
+async function letsGo(phone_no_id, from) {
+    console.log("Awaiting fetch");
     questionAsked = true;
     await fetchQuestionAndHandle(phone_no_id, from);
 }
